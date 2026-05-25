@@ -1,0 +1,10 @@
+{
+  "name": "imposter-game",
+  "description": "Imposter card game for Telegram Web App",
+  "require": {
+    "php": ">=8.0"
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}

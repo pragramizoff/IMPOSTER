@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_sqlite", "php82Extensions.sqlite3"]
+
+[phases.build]
+cmds = ["mkdir -p data && chmod 755 data"]
+
+[start]
+cmd = "php -S 0.0.0.0:$PORT router.php"

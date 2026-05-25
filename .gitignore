@@ -1,0 +1,7 @@
+data/
+*.db
+*.db-wal
+*.db-shm
+vendor/
+.env
+.DS_Store

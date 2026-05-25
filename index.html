@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#080c14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Imposter O'yini</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===================== -->
+<!-- SCREEN 1: MENU        -->
+<!-- ===================== -->
+<div class="screen active" id="screen-menu">
+  <div class="logo-wrap">
+    <span class="logo-icon">🎭</span>
+  </div>
+  <div class="logo-title">IMPOSTER</div>
+  <div class="logo-subtitle">O ' Y I N I</div>
+
+  <div style="height:24px"></div>
+
+  <p class="menu-desc">
+    3–10 nafar o'yinchi.<br>
+    Bir kishi yashirin imposter —<br>uni topishga harakat qiling!
+  </p>
+
+  <button class="btn btn-primary" onclick="openPlayerCount()">
+    🎮 &nbsp; O'yinni Boshlash
+  </button>
+
+  <button class="btn btn-secondary" onclick="openAdmin()">
+    ⚙️ &nbsp; So'zlarni Boshqarish
+  </button>
+</div>
+
+<!-- ========================= -->
+<!-- SCREEN 2: PLAYER COUNT    -->
+<!-- ========================= -->
+<div class="screen" id="screen-players">
+  <div class="screen-title">Nechta kishi?</div>
+  <p class="screen-sub">3 tadan 10 tagacha</p>
+
+  <div class="count-display">
+    <button class="count-btn" id="btnMinus" onclick="updateCount(G.playerCount - 1)">−</button>
+    <div>
+      <div class="count-num" id="countNum">5</div>
+      <div class="count-label" id="countLabel">oyinchi</div>
+    </div>
+    <button class="count-btn" id="btnPlus" onclick="updateCount(G.playerCount + 1)">+</button>
+  </div>
+
+  <div class="players-grid" id="playerDots">
+    <div class="player-dot filled"></div>
+    <div class="player-dot filled"></div>
+    <div class="player-dot filled"></div>
+    <div class="player-dot filled"></div>
+    <div class="player-dot filled"></div>
+    <div class="player-dot"></div>
+    <div class="player-dot"></div>
+    <div class="player-dot"></div>
+    <div class="player-dot"></div>
+    <div class="player-dot"></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="startGame()">
+    ▶ &nbsp; Boshlash
+  </button>
+  <button class="btn btn-ghost" onclick="openMenu()">← Orqaga</button>
+</div>
+
+<!-- ========================= -->
+<!-- SCREEN 3: CARD DEAL       -->
+<!-- ========================= -->
+<div class="screen" id="screen-deal">
+
+  <div class="deal-header">
+    <div class="deal-player-label" id="dealPlayerNum">1-chi oyinchi</div>
+    <div class="deal-player-name" id="dealPlayerName">Birinchi</div>
+  </div>
+
+  <p class="deal-instruction" id="dealInstruction">
+    Telefonni oling va kartangizni ko'ring
+  </p>
+
+  <!-- CARD -->
+  <div class="card-scene" id="cardScene" onclick="flipCard()">
+    <div class="card-inner">
+
+      <!-- BACK -->
+      <div class="card-face card-back">
+        <div class="card-back-pattern"></div>
+        <div class="card-back-icon">🎭</div>
+        <div class="card-back-text">IMPOSTER O'YINI</div>
+        <div class="tap-hint">👆 bosing</div>
+      </div>
+
+      <!-- FRONT (built dynamically) -->
+      <div class="card-face card-front normal" id="cardFront"></div>
+
+    </div>
+  </div>
+
+  <p style="font-size:12px;color:var(--text2);text-align:center;min-height:18px" id="cardInstruction">
+    👆 Kartani bosib ko'ring
+  </p>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="dealProgress" style="width:0%"></div>
+  </div>
+
+  <button class="btn btn-primary" id="btnNext" onclick="nextPlayer()"
+          style="display:none">
+    ✓ &nbsp; Keyingi →
+  </button>
+</div>
+
+<!-- ========================= -->
+<!-- SCREEN 4: GAME STARTED    -->
+<!-- ========================= -->
+<div class="screen" id="screen-go">
+  <div class="go-icon">🎉</div>
+  <div class="go-title">O'yin Boshlandi!</div>
+
+  <p style="font-size:14px;color:var(--text2);text-align:center;max-width:260px;line-height:1.6">
+    Hamma kartasini ko'rdi.<br>Endi gaplashishni boshlang!
+  </p>
+
+  <div class="go-rules">
+    <div class="go-rules-title">📋 Qoidalar</div>
+    <ul>
+      <li>Har bir oyinchi so'zini tasvirlab bering</li>
+      <li>To'g'ridan-to'g'ri aytmang!</li>
+      <li>Imposter kimligini toping</li>
+      <li>Imposter esa so'zni topishga harakat qilsin</li>
+      <li>Ovoz berib imposter tanlang</li>
+    </ul>
+  </div>
+
+  <button class="btn btn-primary" onclick="startGame()">
+    🔄 &nbsp; Yangi O'yin
+  </button>
+  <button class="btn btn-ghost" onclick="openMenu()">
+    🏠 &nbsp; Bosh Menu
+  </button>
+</div>
+
+<!-- ========================= -->
+<!-- SCREEN 5: ADMIN PANEL     -->
+<!-- ========================= -->
+<div class="screen" id="screen-admin">
+  <div class="admin-header">
+    <div class="admin-title">⚙️ So'zlar</div>
+    <button class="btn btn-ghost btn-sm" onclick="openMenu()" style="width:auto;padding:8px 14px">✕</button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Stats -->
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">—</div>
+        <div class="stat-label">Jami so'z</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statActive">—</div>
+        <div class="stat-label">Faol so'z</div>
+      </div>
+    </div>
+
+    <!-- Add Word Form -->
+    <div class="add-form">
+      <div class="add-form-title">✦ Yangi So'z Qo'shish</div>
+      <div class="input-row">
+        <input class="input-field" id="newWord" type="text"
+               placeholder="So'z kiriting..." maxlength="50"
+               autocomplete="off" autocorrect="off" autocapitalize="words">
+        <select class="select-field" id="newCategory">
+          <option value="umumiy">umumiy</option>
+          <option value="taom">taom</option>
+          <option value="joy">joy</option>
+          <option value="hayvon">hayvon</option>
+          <option value="buyum">buyum</option>
+          <option value="sport">sport</option>
+          <option value="kasb">kasb</option>
+          <option value="tabiat">tabiat</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addWord()" style="max-width:none">
+        + &nbsp; Qo'shish
+      </button>
+    </div>
+
+    <!-- Filter Row -->
+    <div class="filter-row" id="filterRow">
+      <button class="filter-chip active" onclick="setFilter('all')">✦ Hammasi</button>
+    </div>
+
+    <!-- Word List -->
+    <div class="word-list" id="wordList">
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<script src="assets/game.js"></script>
+</body>
+</html>
