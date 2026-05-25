@@ -70,10 +70,25 @@
     <div class="player-dot"></div>
   </div>
 
-  <button class="btn btn-primary" onclick="startGame()">
-    ▶ &nbsp; Boshlash
-  </button>
+  <button class="btn btn-primary" onclick="openNamesScreen()">
+  ▶ &nbsp; Boshlash
+</button>
   <button class="btn btn-ghost" onclick="openMenu()">← Orqaga</button>
+</div>
+
+<!-- ========================= -->
+<!-- SCREEN 2.5: PLAYER NAMES  -->
+<!-- ========================= -->
+<div class="screen" id="screen-names">
+  <div class="screen-title">Ismlarni kiriting</div>
+  <p class="screen-sub">Har bir oyinchi o'z ismini kiriting</p>
+
+  <div class="names-list" id="namesList"></div>
+
+  <button class="btn btn-primary" onclick="confirmNames()">
+    ▶ &nbsp; Davom etish
+  </button>
+  <button class="btn btn-ghost" onclick="openPlayerCount()">← Orqaga</button>
 </div>
 
 <!-- ========================= -->
@@ -121,7 +136,6 @@
     ✓ &nbsp; Keyingi →
   </button>
 </div>
-
 <!-- ========================= -->
 <!-- SCREEN 4: GAME STARTED    -->
 <!-- ========================= -->
@@ -142,6 +156,41 @@
       <li>Imposter esa so'zni topishga harakat qilsin</li>
       <li>Ovoz berib imposter tanlang</li>
     </ul>
+  </div>
+
+  <button class="btn btn-primary" onclick="showResult()">
+    🏆 &nbsp; Natijani Ko'rish
+  </button>
+  <button class="btn btn-secondary" onclick="startGame()">
+    🔄 &nbsp; Yangi O'yin
+  </button>
+  <button class="btn btn-ghost" onclick="openMenu()">
+    🏠 &nbsp; Bosh Menu
+  </button>
+</div>
+
+<!-- ========================= -->
+<!-- SCREEN 4.5: RESULT        -->
+<!-- ========================= -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <div class="result-icon">🎭</div>
+    <div class="result-title">O'yin Natijasi</div>
+
+    <div class="result-card imposter-reveal">
+      <div class="result-label">🔴 Imposter</div>
+      <div class="result-name" id="resultImposterName">—</div>
+    </div>
+
+    <div class="result-card word-reveal">
+      <div class="result-label">💬 So'z</div>
+      <div class="result-name" id="resultWord">—</div>
+    </div>
+
+    <div class="result-players">
+      <div class="result-players-title">👥 Barcha oyinchilar</div>
+      <div id="resultPlayersList"></div>
+    </div>
   </div>
 
   <button class="btn btn-primary" onclick="startGame()">
