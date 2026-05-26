@@ -105,13 +105,26 @@ function showDealScreen() {
   const pct = (p / G.playerCount) * 100;
   document.getElementById('dealProgress').style.width = pct + '%';
 
-  // Reset card instantly (no animation)
+  // BUG FIX: avval yashiramiz, transition o'chiramiz, reset qilamiz
   const scene = document.getElementById('cardScene');
-  scene.style.transition = 'none';
-  scene.style.opacity = '1';
-  scene.classList.remove('flipped');
+  const inner = document.querySelector('.card-inner');
 
-  buildCardFront(G.cards[p]);
+  inner.style.transition = 'none';        // animatsiyani o'chir
+  scene.style.visibility = 'hidden';      // yashir
+  scene.classList.remove('flipped');      // reset
+
+  buildCardFront(G.cards[p]);             // yangi content set
+
+  // reflow trigger — brauzer yangi holatni qabul qilsin
+  void scene.offsetHeight;
+
+  // keyin qayta ko'rsat va transition qaytarish
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      inner.style.transition = '';
+      scene.style.visibility = 'visible';
+    });
+  });
 
   document.getElementById('btnNext').style.display = 'none';
   document.getElementById('btnNext').textContent =
@@ -123,41 +136,13 @@ function showDealScreen() {
   showScreen('screen-deal');
 }
 
-function buildCardFront(card) {
-  const front = document.getElementById('cardFront');
-  front.innerHTML = '';
-  front.className = 'card-face card-front';
-
-  if (card.isImposter) {
-    front.classList.add('imposter');
-    front.innerHTML = `
-      <div class="card-imp-pattern"></div>
-      <div class="card-suits" style="color:rgba(231,76,60,0.4)">♠ ♥ ♦ ♣</div>
-      <div class="card-imp-center">
-        <div class="card-imp-icon">🎭</div>
-        <div class="card-imp-title">IMPOSTER</div>
-        <div class="card-imp-sub">Siz josussiz<br>Hech kim bilmasin!</div>
-      </div>
-      <div class="card-suits" style="color:rgba(231,76,60,0.4)">♣ ♦ ♥ ♠</div>
-    `;
+// ===== NEXT PLAYER =====
+function nextPlayer() {
+  G.currentPlayer++;
+  if (G.currentPlayer >= G.playerCount) {
+    showScreen('screen-go');
   } else {
-    front.classList.add('normal');
-    front.innerHTML = `
-      <div class="card-corner">
-        <div class="card-corner-sym">♦</div>
-        <div class="card-corner-word">${G.word}</div>
-      </div>
-      <div class="card-center">
-        <div class="card-word-label">So'zingiz</div>
-        <div class="card-divider"></div>
-        <div class="card-word">${G.word}</div>
-        <div class="card-divider"></div>
-      </div>
-      <div class="card-corner right">
-        <div class="card-corner-sym">♦</div>
-        <div class="card-corner-word">${G.word}</div>
-      </div>
-    `;
+    showDealScreen();
   }
 }
 
