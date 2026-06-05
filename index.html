@@ -12,20 +12,18 @@
 </head>
 <body>
 
-<!-- ===== TOAST ===== -->
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ===================== -->
-<!-- SCREEN 1: MENU        -->
-<!-- ===================== -->
+<!-- ========================= -->
+<!-- SCREEN 1: MENU            -->
+<!-- ========================= -->
 <div class="screen active" id="screen-menu">
   <div class="logo-wrap">
     <span class="logo-icon">🎭</span>
   </div>
   <div class="logo-title">IMPOSTER</div>
   <div class="logo-subtitle">O ' Y I N I</div>
-
-  <div style="height:24px"></div>
 
   <p class="menu-desc">
     3–10 nafar o'yinchi.<br>
@@ -35,7 +33,6 @@
   <button class="btn btn-primary" onclick="openPlayerCount()">
     🎮 &nbsp; O'yinni Boshlash
   </button>
-
   <button class="btn btn-secondary" onclick="openAdmin()">
     ⚙️ &nbsp; So'zlarni Boshqarish
   </button>
@@ -52,7 +49,7 @@
     <button class="count-btn" id="btnMinus" onclick="updateCount(G.playerCount - 1)">−</button>
     <div>
       <div class="count-num" id="countNum">5</div>
-      <div class="count-label" id="countLabel">oyinchi</div>
+      <span class="count-label" id="countLabel">OYINCHI</span>
     </div>
     <button class="count-btn" id="btnPlus" onclick="updateCount(G.playerCount + 1)">+</button>
   </div>
@@ -71,13 +68,13 @@
   </div>
 
   <button class="btn btn-primary" onclick="openNamesScreen()">
-  ▶ &nbsp; Boshlash
-</button>
+    ▶ &nbsp; Boshlash
+  </button>
   <button class="btn btn-ghost" onclick="openMenu()">← Orqaga</button>
 </div>
 
 <!-- ========================= -->
-<!-- SCREEN 2.5: PLAYER NAMES  -->
+<!-- SCREEN 3: PLAYER NAMES    -->
 <!-- ========================= -->
 <div class="screen" id="screen-names">
   <div class="screen-title">Ismlarni kiriting</div>
@@ -92,13 +89,13 @@
 </div>
 
 <!-- ========================= -->
-<!-- SCREEN 3: CARD DEAL       -->
+<!-- SCREEN 4: CARD DEAL       -->
 <!-- ========================= -->
 <div class="screen" id="screen-deal">
 
   <div class="deal-header">
-    <div class="deal-player-label" id="dealPlayerNum">1-chi oyinchi</div>
-    <div class="deal-player-name" id="dealPlayerName">Birinchi</div>
+    <div class="deal-player-label" id="dealPlayerNum">1 / 5</div>
+    <div class="deal-player-name" id="dealPlayerName">Oyinchi</div>
   </div>
 
   <p class="deal-instruction" id="dealInstruction">
@@ -117,7 +114,7 @@
         <div class="tap-hint">👆 bosing</div>
       </div>
 
-      <!-- FRONT (built dynamically) -->
+      <!-- FRONT (dynamically built) -->
       <div class="card-face card-front normal" id="cardFront"></div>
 
     </div>
@@ -131,13 +128,13 @@
     <div class="progress-fill" id="dealProgress" style="width:0%"></div>
   </div>
 
-  <button class="btn btn-primary" id="btnNext" onclick="nextPlayer()"
-          style="display:none">
+  <button class="btn btn-primary" id="btnNext" onclick="nextPlayer()" style="display:none">
     ✓ &nbsp; Keyingi →
   </button>
 </div>
+
 <!-- ========================= -->
-<!-- SCREEN 4: GAME STARTED    -->
+<!-- SCREEN 5: GAME STARTED    -->
 <!-- ========================= -->
 <div class="screen" id="screen-go">
   <div class="go-icon">🎉</div>
@@ -170,7 +167,7 @@
 </div>
 
 <!-- ========================= -->
-<!-- SCREEN 4.5: RESULT        -->
+<!-- SCREEN 6: RESULT          -->
 <!-- ========================= -->
 <div class="screen" id="screen-result">
   <div class="result-wrap">
@@ -178,12 +175,12 @@
     <div class="result-title">O'yin Natijasi</div>
 
     <div class="result-card imposter-reveal">
-      <div class="result-label">🔴 Imposter</div>
+      <div class="result-label">🔴 Imposter kim edi?</div>
       <div class="result-name" id="resultImposterName">—</div>
     </div>
 
     <div class="result-card word-reveal">
-      <div class="result-label">💬 So'z</div>
+      <div class="result-label">💬 So'z nima edi?</div>
       <div class="result-name" id="resultWord">—</div>
     </div>
 
@@ -193,7 +190,7 @@
     </div>
   </div>
 
-  <button class="btn btn-primary" onclick="startGame()">
+  <button class="btn btn-primary" onclick="startGame()" style="margin-top:8px">
     🔄 &nbsp; Yangi O'yin
   </button>
   <button class="btn btn-ghost" onclick="openMenu()">
@@ -202,7 +199,7 @@
 </div>
 
 <!-- ========================= -->
-<!-- SCREEN 5: ADMIN PANEL     -->
+<!-- SCREEN 7: ADMIN PANEL     -->
 <!-- ========================= -->
 <div class="screen" id="screen-admin">
   <div class="admin-header">
@@ -211,8 +208,6 @@
   </div>
 
   <div class="admin-body">
-
-    <!-- Stats -->
     <div class="admin-stats">
       <div class="stat-card">
         <div class="stat-num" id="statTotal">—</div>
@@ -224,7 +219,6 @@
       </div>
     </div>
 
-    <!-- Add Word Form -->
     <div class="add-form">
       <div class="add-form-title">✦ Yangi So'z Qo'shish</div>
       <div class="input-row">
@@ -247,12 +241,10 @@
       </button>
     </div>
 
-    <!-- Filter Row -->
     <div class="filter-row" id="filterRow">
       <button class="filter-chip active" onclick="setFilter('all')">✦ Hammasi</button>
     </div>
 
-    <!-- Word List -->
     <div class="word-list" id="wordList">
       <div class="loading-dots">
         <span></span><span></span><span></span>

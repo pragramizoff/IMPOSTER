@@ -49,7 +49,6 @@ function openNamesScreen() {
     `;
     list.appendChild(row);
   }
-  // Enter key moves to next input
   for (let i = 0; i < G.playerCount; i++) {
     document.getElementById(`name-${i}`).addEventListener('keydown', e => {
       if (e.key === 'Enter') {
@@ -105,20 +104,23 @@ function showDealScreen() {
   const pct = (p / G.playerCount) * 100;
   document.getElementById('dealProgress').style.width = pct + '%';
 
-  // BUG FIX: avval yashiramiz, transition o'chiramiz, reset qilamiz
+  // BUG FIX: transition o'chirib, yashirib, reset qilamiz
   const scene = document.getElementById('cardScene');
   const inner = document.querySelector('.card-inner');
 
-  inner.style.transition = 'none';        // animatsiyani o'chir
-  scene.style.visibility = 'hidden';      // yashir
-  scene.classList.remove('flipped');      // reset
+  // 1. transition o'chir
+  inner.style.transition = 'none';
+  // 2. ko'rinmasin
+  scene.style.visibility = 'hidden';
+  // 3. orqaga qaytarish (flipped class olib tashlash)
+  scene.classList.remove('flipped');
+  // 4. yangi karta contentini qo'y
+  buildCardFront(G.cards[p]);
 
-  buildCardFront(G.cards[p]);             // yangi content set
+  // 5. brauzer yangi holatni render qilsin (reflow)
+  void inner.offsetHeight;
 
-  // reflow trigger — brauzer yangi holatni qabul qilsin
-  void scene.offsetHeight;
-
-  // keyin qayta ko'rsat va transition qaytarish
+  // 6. keyingi frame da transition qaytaramiz va ko'rsatamiz
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       inner.style.transition = '';
@@ -126,23 +128,54 @@ function showDealScreen() {
     });
   });
 
-  document.getElementById('btnNext').style.display = 'none';
-  document.getElementById('btnNext').textContent =
-    p < G.playerCount - 1
-      ? `✓  Keyingi: ${G.playerNames[p + 1] || (p + 2) + '-oyinchi'} →`
-      : `🎮  O'yinni Boshlash`;
+  // next tugma
+  const btnNext = document.getElementById('btnNext');
+  btnNext.style.display = 'none';
+  if (p < G.playerCount - 1) {
+    btnNext.textContent = `✓  Keyingi: ${G.playerNames[p + 1] || (p + 2) + '-oyinchi'} →`;
+  } else {
+    btnNext.textContent = `🎮  O'yinni Boshlash`;
+  }
 
   document.getElementById('cardInstruction').textContent = "👆 Kartani bosib ko'ring";
   showScreen('screen-deal');
 }
 
-// ===== NEXT PLAYER =====
-function nextPlayer() {
-  G.currentPlayer++;
-  if (G.currentPlayer >= G.playerCount) {
-    showScreen('screen-go');
+function buildCardFront(card) {
+  const front = document.getElementById('cardFront');
+  front.innerHTML = '';
+  front.className = 'card-face card-front';
+
+  if (card.isImposter) {
+    front.classList.add('imposter');
+    front.innerHTML = `
+      <div class="card-imp-pattern"></div>
+      <div class="card-suits" style="color:rgba(231,76,60,0.4)">♠ ♥ ♦ ♣</div>
+      <div class="card-imp-center">
+        <div class="card-imp-icon">🎭</div>
+        <div class="card-imp-title">IMPOSTER</div>
+        <div class="card-imp-sub">Siz josussiz<br>Hech kim bilmasin!</div>
+      </div>
+      <div class="card-suits" style="color:rgba(231,76,60,0.4)">♣ ♦ ♥ ♠</div>
+    `;
   } else {
-    showDealScreen();
+    front.classList.add('normal');
+    front.innerHTML = `
+      <div class="card-corner">
+        <div class="card-corner-sym">♦</div>
+        <div class="card-corner-word">${G.word}</div>
+      </div>
+      <div class="card-center">
+        <div class="card-word-label">So'zingiz</div>
+        <div class="card-divider"></div>
+        <div class="card-word">${G.word}</div>
+        <div class="card-divider"></div>
+      </div>
+      <div class="card-corner right">
+        <div class="card-corner-sym">♦</div>
+        <div class="card-corner-word">${G.word}</div>
+      </div>
+    `;
   }
 }
 
@@ -152,7 +185,6 @@ function flipCard() {
   G.revealed = true;
 
   const scene = document.getElementById('cardScene');
-  scene.style.transition = '';
   scene.classList.add('flipped');
 
   if (navigator.vibrate) navigator.vibrate(30);
@@ -166,26 +198,17 @@ function flipCard() {
     const btn = document.getElementById('btnNext');
     btn.style.display = 'flex';
     btn.style.animation = 'fadeIn 0.3s ease';
-  }, 600);
+  }, 700);
 }
 
-// ===== NEXT PLAYER (bug fix: fade out before switching) =====
+// ===== NEXT PLAYER =====
 function nextPlayer() {
-  const scene = document.getElementById('cardScene');
-
-  // Fade out
-  scene.style.transition = 'opacity 0.25s ease';
-  scene.style.opacity = '0';
-
-  setTimeout(() => {
-    G.currentPlayer++;
-    if (G.currentPlayer >= G.playerCount) {
-      scene.style.opacity = '1';
-      showScreen('screen-go');
-    } else {
-      showDealScreen();
-    }
-  }, 250);
+  G.currentPlayer++;
+  if (G.currentPlayer >= G.playerCount) {
+    showScreen('screen-go');
+  } else {
+    showDealScreen();
+  }
 }
 
 // ===== RESULT SCREEN =====
@@ -198,7 +221,7 @@ function showResult() {
   list.innerHTML = G.playerNames.map((name, i) => `
     <div class="result-player-row">
       <div class="result-player-badge">${i === G.imposterIndex ? '🎭' : '😊'}</div>
-      <div class="result-player-name">${name}</div>
+      <div class="result-player-name">${escHtml(name)}</div>
       <div class="result-player-tag ${i === G.imposterIndex ? 'tag-imposter' : 'tag-normal'}">
         ${i === G.imposterIndex ? 'IMPOSTER' : 'ODDIY'}
       </div>
@@ -351,6 +374,8 @@ if (window.Telegram?.WebApp) {
   tg.setBackgroundColor('#080c14');
 }
 
-// ===== PLAYER COUNT BUTTON — o'zgartiring =====
-// index.html da "Boshlash" tugmasi onclick ni o'zgartiring:
-// onclick="openNamesScreen()" qilib
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('newWord')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') addWord();
+  });
+});
